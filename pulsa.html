@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <title>Pulsa - Hotspot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .pulsa-input-section {
+            padding: 0 24px 24px;
+        }
+
+        .pulsa-input-group {
+            margin-bottom: 20px;
+        }
+
+        .pulsa-input-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .pulsa-input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            transition: all 0.3s ease;
+        }
+
+        .pulsa-input-wrapper:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(27, 160, 226, 0.1);
+        }
+
+        .pulsa-input-prefix {
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: var(--radius-md) 0 0 var(--radius-md);
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .pulsa-input {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .pulsa-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .operator-grid {
+            display: flex;
+            gap: 12px;
+            padding: 0 24px 20px;
+            overflow-x: auto;
+        }
+
+        .operator-card {
+            min-width: 70px;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .operator-card:hover,
+        .operator-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(27, 160, 226, 0.05);
+        }
+
+        .operator-card.selected {
+            box-shadow: 0 0 0 4px rgba(27, 160, 226, 0.1);
+        }
+
+        .operator-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .operator-card[data-operator="Telkomsel"] .operator-name {
+            color: #EC1C24;
+        }
+
+        .operator-card[data-operator="Indosat"] .operator-name {
+            color: #D9A300;
+        }
+
+        .operator-card[data-operator="XL"] .operator-name {
+            color: #002DBB;
+        }
+
+        .operator-card[data-operator="Tri"] .operator-name {
+            color: #FF7F00;
+        }
+
+        .operator-card[data-operator="Axis"] .operator-name {
+            color: #8B008B;
+        }
+
+        .operator-card[data-operator="Smartfren"] .operator-name {
+            color: #FF0059;
+        }
+
+        /* Operator Colors - Fallback or for text-only (Tri) */
+        .operator-card[data-operator="Tri"] .operator-name {
+            color: #FF7F00;
+        }
+
+        .operator-logo {
+            max-width: 100%;
+            height: 30px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .nominal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 24px 24px;
+        }
+
+        .nominal-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            /* New Flex Layout */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 110px;
+            position: relative;
+        }
+
+        .nominal-card:hover,
+        .nominal-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(27, 160, 226, 0.05);
+        }
+
+        .nominal-card.selected {
+            box-shadow: 0 0 0 4px rgba(27, 160, 226, 0.1);
+        }
+
+        .nominal-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .nominal-price {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .nominal-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: inline-block;
+            padding: 2px 6px;
+            background: rgba(255, 122, 0, 0.15);
+            color: #FF7A00;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 6px;
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+
+        .checkout-section {
+            padding: 0 24px 100px;
+        }
+
+        .checkout-summary {
+            background: var(--bg-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .checkout-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .checkout-row:not(:last-child) {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .checkout-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .checkout-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .checkout-total {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .phone-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .phone-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="phone-frame">
+
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <button class="back-btn" onclick="history.back()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <h1 class="page-title">Pulsa</h1>
+            </div>
+
+            <!-- Phone Icon -->
+            <div style="text-align: center; padding: 16px 0;">
+                <div class="phone-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                    </svg>
+                </div>
+                <p style="font-size: 14px; color: var(--text-secondary);">Isi Pulsa Semua Operator</p>
+            </div>
+
+            <!-- Phone Number Input -->
+            <div class="pulsa-input-section fade-in">
+                <div class="pulsa-input-group">
+                    <label class="pulsa-input-label">Nomor Handphone</label>
+                    <div class="pulsa-input-wrapper">
+                        <span class="pulsa-input-prefix">+62</span>
+                        <input type="text" class="pulsa-input" id="phone-number" placeholder="8xxxxxxxxxx"
+                            maxlength="12">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Operator Selection -->
+            <div class="section-header">
+                <h2 class="section-title">Operator</h2>
+            </div>
+            <div class="operator-grid">
+                <div class="operator-card" data-operator="Telkomsel">
+                    <img src="img/telkomsel.png" alt="Telkomsel" class="operator-logo">
+                </div>
+                <div class="operator-card" data-operator="Indosat">
+                    <img src="img/indosat.png" alt="Indosat" class="operator-logo">
+                </div>
+                <div class="operator-card" data-operator="XL">
+                    <img src="img/xl.png" alt="XL" class="operator-logo">
+                </div>
+                <div class="operator-card" data-operator="Tri">
+                    <img src="img/tri.png" alt="Tri" class="operator-logo">
+                </div>
+                <div class="operator-card" data-operator="Axis">
+                    <img src="img/axis.png" alt="Axis" class="operator-logo">
+                </div>
+                <div class="operator-card" data-operator="Smartfren">
+                    <img src="img/smartfren.png" alt="Smartfren" class="operator-logo">
+                </div>
+            </div>
+
+            <!-- Section Title -->
+            <div class="section-header">
+                <h2 class="section-title">Pilih Nominal</h2>
+            </div>
+
+            <!-- Nominal Grid -->
+            <div class="nominal-grid slide-up">
+                <div class="nominal-card" data-nominal="5000" data-price="6500">
+                    <p class="nominal-value">Rp 5.000</p>
+                    <p class="nominal-price">Pay: Rp 6.500</p>
+                </div>
+                <div class="nominal-card" data-nominal="10000" data-price="11500">
+                    <p class="nominal-value">Rp 10.000</p>
+                    <p class="nominal-price">Pay: Rp 11.500</p>
+                </div>
+                <div class="nominal-card" data-nominal="20000" data-price="21500">
+                    <p class="nominal-value">Rp 20.000</p>
+                    <p class="nominal-price">Pay: Rp 21.500</p>
+                </div>
+                <div class="nominal-card" data-nominal="25000" data-price="26500">
+                    <p class="nominal-value">Rp 25.000</p>
+                    <p class="nominal-price">Pay: Rp 26.500</p>
+                    <span class="nominal-badge">Best Seller</span>
+                </div>
+                <div class="nominal-card" data-nominal="50000" data-price="51500">
+                    <p class="nominal-value">Rp 50.000</p>
+                    <p class="nominal-price">Pay: Rp 51.500</p>
+                </div>
+                <div class="nominal-card" data-nominal="100000" data-price="101500">
+                    <p class="nominal-value">Rp 100.000</p>
+                    <p class="nominal-price">Pay: Rp 101.500</p>
+                </div>
+            </div>
+
+            <!-- Checkout Section -->
+            <div class="checkout-section slide-up">
+                <div class="checkout-summary" id="checkout-summary" style="display: none;">
+                    <div class="checkout-row">
+                        <span class="checkout-label">Nomor HP</span>
+                        <span class="checkout-value" id="summary-phone">-</span>
+                    </div>
+                    <div class="checkout-row">
+                        <span class="checkout-label">Operator</span>
+                        <span class="checkout-value" id="summary-operator">-</span>
+                    </div>
+                    <div class="checkout-row">
+                        <span class="checkout-label">Nominal Pulsa</span>
+                        <span class="checkout-value" id="summary-nominal">-</span>
+                    </div>
+                    <div class="checkout-row">
+                        <span class="checkout-label">Total Pembayaran</span>
+                        <span class="checkout-value checkout-total" id="summary-total">-</span>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="buy-btn" disabled>
+                    Beli Pulsa
+                </button>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="status.html" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                    <span>Beranda</span>
+                </a>
+                <a href="voucher.html" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    <span>Shopping</span>
+                </a>
+                <a href="help.html" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <span>Help</span>
+                </a>
+                <a href="account.html" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span>Account</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="config.js?v=1003"></script>
+    <script>
+        let selectedOperator = null;
+        let selectedNominal = null;
+        let selectedPrice = null;
+
+        // Operator detection based on phone prefix
+        const operatorPrefixes = {
+            'Telkomsel': ['811', '812', '813', '821', '822', '823', '851', '852', '853'],
+            'Indosat': ['814', '815', '816', '855', '856', '857', '858'],
+            'XL': ['817', '818', '819', '859', '877', '878'],
+            'Tri': ['895', '896', '897', '898', '899'],
+            'Axis': ['831', '832', '833', '838'],
+            'Smartfren': ['881', '882', '883', '884', '885', '886', '887', '888', '889']
+        };
+
+        // Toast Function
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Format currency
+        function formatCurrency(num) {
+            return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Detect operator from phone number
+        function detectOperator(phoneNumber) {
+            if (phoneNumber.length < 3) return null;
+
+            const prefix = phoneNumber.substring(0, 3);
+
+            for (const [operator, prefixes] of Object.entries(operatorPrefixes)) {
+                if (prefixes.includes(prefix)) {
+                    return operator;
+                }
+            }
+            return null;
+        }
+
+        // Operator card selection
+        document.querySelectorAll('.operator-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.operator-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedOperator = card.dataset.operator;
+                updateCheckout();
+            });
+        });
+
+        // Phone number input with auto operator detection
+        document.getElementById('phone-number').addEventListener('input', (e) => {
+            // Only allow numbers
+            e.target.value = e.target.value.replace(/\D/g, '');
+
+            // Auto-detect operator
+            const detected = detectOperator(e.target.value);
+            if (detected) {
+                document.querySelectorAll('.operator-card').forEach(c => c.classList.remove('selected'));
+                const operatorCard = document.querySelector(`[data-operator="${detected}"]`);
+                if (operatorCard) {
+                    operatorCard.classList.add('selected');
+                    selectedOperator = detected;
+                }
+            }
+
+            updateCheckout();
+        });
+
+        // Nominal card selection
+        document.querySelectorAll('.nominal-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.nominal-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedNominal = parseInt(card.dataset.nominal);
+                selectedPrice = parseInt(card.dataset.price);
+                updateCheckout();
+            });
+        });
+
+        // Update checkout summary
+        function updateCheckout() {
+            const phoneNumber = document.getElementById('phone-number').value;
+            const checkoutSummary = document.getElementById('checkout-summary');
+            const buyBtn = document.getElementById('buy-btn');
+
+            if (selectedNominal && selectedOperator && phoneNumber.length >= 10) {
+                checkoutSummary.style.display = 'block';
+                document.getElementById('summary-phone').textContent = '+62' + phoneNumber;
+                document.getElementById('summary-operator').textContent = selectedOperator;
+                document.getElementById('summary-nominal').textContent = formatCurrency(selectedNominal);
+                document.getElementById('summary-total').textContent = formatCurrency(selectedPrice);
+                buyBtn.disabled = false;
+            } else {
+                checkoutSummary.style.display = 'none';
+                buyBtn.disabled = true;
+            }
+        }
+
+        // Buy button
+        document.getElementById('buy-btn').addEventListener('click', () => {
+            const phoneNumber = document.getElementById('phone-number').value;
+
+            if (!phoneNumber || phoneNumber.length < 10) {
+                showToast('Masukkan nomor HP yang valid');
+                return;
+            }
+
+            if (!selectedOperator) {
+                showToast('Pilih operator terlebih dahulu');
+                return;
+            }
+
+            if (!selectedNominal) {
+                showToast('Pilih nominal pulsa terlebih dahulu');
+                return;
+            }
+
+            // Redirect to WhatsApp
+            const message = `Halo Admin, saya ingin membeli Pulsa:\n\nNomor HP: +62${phoneNumber}\nOperator: ${selectedOperator}\nNominal: ${formatCurrency(selectedNominal)}\nTotal: ${formatCurrency(selectedPrice)}`;
+
+            // Force redirect with fallback (Aggressive)
+            let targetPhone = '6287784477751'; // Default Fallback
+            if (typeof BUYER_CONFIG !== 'undefined' && BUYER_CONFIG.adminPhone) {
+                targetPhone = BUYER_CONFIG.adminPhone;
+            }
+
+            const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <title>Token Listrik - Hotspot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .token-input-section {
+            padding: 0 24px 24px;
+        }
+
+        .token-input-group {
+            margin-bottom: 20px;
+        }
+
+        .token-input-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .token-input-wrapper {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            transition: all 0.3s ease;
+        }
+
+        .token-input-wrapper:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(27, 160, 226, 0.1);
+        }
+
+        .token-input-prefix {
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: var(--radius-md) 0 0 var(--radius-md);
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .token-input {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .token-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .nominal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 24px 24px;
+        }
+
+        .nominal-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            /* New Flex Layout */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 110px;
+            position: relative;
+        }
+
+        .nominal-card:hover,
+        .nominal-card.selected {
+            border-color: var(--primary-color);
+            background: rgba(27, 160, 226, 0.05);
+        }
+
+        .nominal-card.selected {
+            box-shadow: 0 0 0 4px rgba(27, 160, 226, 0.1);
+        }
+
+        .nominal-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .nominal-price {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .nominal-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: inline-block;
+            padding: 2px 6px;
+            background: rgba(255, 122, 0, 0.15);
+            color: #FF7A00;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 6px;
+            margin-top: 0;
+            text-transform: uppercase;
+        }
+
+        .checkout-section {
+            padding: 0 24px 100px;
+        }
+
+        .checkout-summary {
+            background: var(--bg-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .checkout-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .checkout-row:not(:last-child) {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .checkout-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .checkout-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .checkout-total {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .pln-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #FFB800 0%, #FF8C00 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        .pln-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="phone-frame">
+
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <button class="back-btn" onclick="history.back()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <h1 class="page-title">Token Listrik PLN</h1>
+            </div>
+
+            <!-- PLN Icon -->
+            <div style="text-align: center; padding: 16px 0;">
+                <div class="pln-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                    </svg>
+                </div>
+                <p style="font-size: 14px; color: var(--text-secondary);">Beli Token Listrik PLN Prabayar</p>
+            </div>
+
+            <!-- Meter Number Input -->
+            <div class="token-input-section fade-in">
+                <div class="token-input-group">
+                    <label class="token-input-label">Nomor Meter / ID Pelanggan</label>
+                    <div class="token-input-wrapper">
+                        <input type="text" class="token-input" id="meter-number"
+                            placeholder="Masukkan 11-12 digit nomor meter" maxlength="12">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Title -->
+            <div class="section-header">
+                <h2 class="section-title">Pilih Nominal</h2>
+            </div>
+
+            <!-- Nominal Grid -->
+            <div class="nominal-grid slide-up">
+                <div class="nominal-card" data-nominal="20000" data-price="21500">
+                    <p class="nominal-value">Rp 20.000</p>
+                    <p class="nominal-price">Pay: Rp 21.500</p>
+                </div>
+                <div class="nominal-card" data-nominal="50000" data-price="51500">
+                    <p class="nominal-value">Rp 50.000</p>
+                    <p class="nominal-price">Pay: Rp 51.500</p>
+                </div>
+                <div class="nominal-card" data-nominal="100000" data-price="102500">
+                    <p class="nominal-value">Rp 100.000</p>
+                    <p class="nominal-price">Pay: Rp 102.500</p>
+                    <span class="nominal-badge">Best Seller</span>
+                </div>
+                <div class="nominal-card" data-nominal="200000" data-price="203500">
+                    <p class="nominal-value">Rp 200.000</p>
+                    <p class="nominal-price">Pay: Rp 203.500</p>
+                </div>
+                <div class="nominal-card" data-nominal="500000" data-price="505500">
+                    <p class="nominal-value">Rp 500.000</p>
+                    <p class="nominal-price">Pay: Rp 505.500</p>
+                </div>
+                <div class="nominal-card" data-nominal="1000000" data-price="1007500">
+                    <p class="nominal-value">Rp 1.000.000</p>
+                    <p class="nominal-price">Pay: Rp 1.007.500</p>
+                </div>
+            </div>
+
+            <!-- Checkout Section -->
+            <div class="checkout-section slide-up">
+                <div class="checkout-summary" id="checkout-summary" style="display: none;">
+                    <div class="checkout-row">
+                        <span class="checkout-label">Nomor Meter</span>
+                        <span class="checkout-value" id="summary-meter">-</span>
+                    </div>
+                    <div class="checkout-row">
+                        <span class="checkout-label">Nominal Token</span>
+                        <span class="checkout-value" id="summary-nominal">-</span>
+                    </div>
+                    <div class="checkout-row">
+                        <span class="checkout-label">Total Pembayaran</span>
+                        <span class="checkout-value checkout-total" id="summary-total">-</span>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="buy-btn" disabled>
+                    Beli Token Listrik
+                </button>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="status.html" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                    <span>Beranda</span>
+                </a>
+                <a href="voucher.html" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    <span>Shopping</span>
+                </a>
+                <a href="help.html" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <span>Help</span>
+                </a>
+                <a href="account.html" class="nav-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <span>Account</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="config.js?v=1003"></script>
+    <script>
+        let selectedNominal = null;
+        let selectedPrice = null;
+
+        // Toast Function
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Format currency
+        function formatCurrency(num) {
+            return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        // Nominal card selection
+        document.querySelectorAll('.nominal-card').forEach(card => {
+            card.addEventListener('click', () => {
+                // Remove selection from all cards
+                document.querySelectorAll('.nominal-card').forEach(c => c.classList.remove('selected'));
+
+                // Select this card
+                card.classList.add('selected');
+
+                selectedNominal = parseInt(card.dataset.nominal);
+                selectedPrice = parseInt(card.dataset.price);
+
+                updateCheckout();
+            });
+        });
+
+        // Update checkout summary
+        function updateCheckout() {
+            const meterNumber = document.getElementById('meter-number').value;
+            const checkoutSummary = document.getElementById('checkout-summary');
+            const buyBtn = document.getElementById('buy-btn');
+
+            if (selectedNominal && meterNumber.length >= 11) {
+                checkoutSummary.style.display = 'block';
+                document.getElementById('summary-meter').textContent = meterNumber;
+                document.getElementById('summary-nominal').textContent = formatCurrency(selectedNominal);
+                document.getElementById('summary-total').textContent = formatCurrency(selectedPrice);
+                buyBtn.disabled = false;
+            } else {
+                checkoutSummary.style.display = 'none';
+                buyBtn.disabled = true;
+            }
+        }
+
+        // Meter number input
+        document.getElementById('meter-number').addEventListener('input', (e) => {
+            // Only allow numbers
+            e.target.value = e.target.value.replace(/\D/g, '');
+            updateCheckout();
+        });
+
+        // Buy button
+        document.getElementById('buy-btn').addEventListener('click', () => {
+            const meterNumber = document.getElementById('meter-number').value;
+
+            if (!meterNumber || meterNumber.length < 11) {
+                showToast('Masukkan nomor meter yang valid (11-12 digit)');
+                return;
+            }
+
+            if (!selectedNominal) {
+                showToast('Pilih nominal token terlebih dahulu');
+                return;
+            }
+
+            // Redirect to WhatsApp or show confirmation
+            const message = `Halo Admin, saya ingin beli Token Listrik PLN:\n\nNomor Meter: ${meterNumber}\nNominal: ${formatCurrency(selectedNominal)}\nTotal: ${formatCurrency(selectedPrice)}`;
+
+            // Force redirect with fallback (Aggressive)
+            let targetPhone = '6287784477751';
+            if (typeof BUYER_CONFIG !== 'undefined' && BUYER_CONFIG.adminPhone) {
+                targetPhone = BUYER_CONFIG.adminPhone;
+            }
+
+            const waText = encodeURIComponent(message);
+            window.open(`https://wa.me/${targetPhone}?text=${waText}`, '_blank');
+        });
+    </script>
+
+    <script>
+        if (typeof BUYER_CONFIG !== 'undefined' && BUYER_CONFIG.businessName) {
+            document.title = "Token Listrik - " + BUYER_CONFIG.businessName;
+        }
+    </script>
+</body>
+
+</html>

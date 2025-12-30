@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <title>Logout - Hotspot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Custom Overrides for this page only */
+        .logout-hero {
+            position: relative;
+            background: linear-gradient(135deg, #1BA0E2 0%, #0D8ECF 100%);
+            padding: 40px 24px 80px;
+            color: white;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            margin-bottom: -60px;
+        }
+
+        .logout-illustration {
+            width: 140px;
+            height: 140px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            backdrop-filter: blur(5px);
+        }
+
+        .logout-illustration svg {
+            width: 70px;
+            height: 70px;
+            color: white;
+        }
+
+        .logout-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logout-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Card floating over the header */
+        .summary-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            margin: 0 24px 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px dashed #E5E7EB;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        .summary-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .btn-relogin {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: #1BA0E2;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(27, 160, 226, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-relogin:hover {
+            background: #1590CC;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(27, 160, 226, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="phone-frame" style="background: #F3F4F6; min-height: 100vh;">
+
+            <!-- Hero Section -->
+            <div class="logout-hero fade-in">
+                <div class="logout-illustration scale-up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </div>
+                <h1 class="logout-title">Logout Berhasil</h1>
+                <p class="logout-desc">Terima kasih telah menggunakan layanan kami.</p>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="summary-card slide-up stagger-1">
+                <div class="summary-row">
+                    <span class="summary-label">Username</span>
+                    <span class="summary-value">$(username)</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">IP Address</span>
+                    <span class="summary-value">$(ip)</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Durasi Sesi</span>
+                    <span class="summary-value">$(uptime)</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Sisa Waktu</span>
+                    <span class="summary-value">$(session-time-left)</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Data Terpakai</span>
+                    <span class="summary-value" style="color: #10B981;">$(bytes-out-nice) / $(bytes-in-nice)</span>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <button class="btn-relogin" onclick="window.location.href='login.html'">Masuk Kembali</button>
+                </div>
+            </div>
+
+            <div class="app-footer" style="padding-bottom: 20px; text-align: center; color: #9CA3AF; font-size: 12px;">
+                <!-- Footer removed as requested -->
+            </div>
+
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="config.js?v=1001"></script>
+    <script>
+        if (typeof BUYER_CONFIG !== 'undefined' && BUYER_CONFIG.businessName) {
+            document.title = "Logout - " + BUYER_CONFIG.businessName;
+        }
+    </script>
+</body>
+
+</html>

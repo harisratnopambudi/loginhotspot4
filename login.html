@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <title>Sign In - Hotspot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hidden {
+            display: none !important;
+        }
+
+        .block-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .block-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        #demoTimerDisplay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF7A00;
+            color: white;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 0 0 8px 8px;
+            z-index: 9000;
+        }
+
+        /* Netflix Banner */
+        .netflix-banner {
+            margin: 0 24px 24px;
+            background: #000000;
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .netflix-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .netflix-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .netflix-text h3 {
+            color: #E50914;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .netflix-text p {
+            color: #FFFFFF;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Block Screen -->
+    <div id="blockScreen" class="block-screen hidden">
+        <div class="block-card">
+            <h2>Akses Ditolak</h2>
+            <p>Portal ini tidak memiliki lisensi yang valid.</p>
+            <a href="#" class="btn-primary" style="display:inline-block; margin-top:16px;">Hubungi Admin</a>
+        </div>
+    </div>
+
+    <!-- Demo Timer -->
+    <div id="demoTimerDisplay" class="hidden">DEMO MODE</div>
+    <div id="cooldownOverlay"></div>
+    <div class="container">
+        <div class="phone-frame">
+
+
+            <!-- Header -->
+            <div class="header">
+                <h1 class="header-title">Silakan Masuk</h1>
+                <p class="header-subtitle"><span id="business-name-display">Hotspot</span> Network</p>
+            </div>
+
+            <!-- Netflix Promo Banner -->
+            <div id="netflix-banner" class="netflix-banner" style="display: none;">
+                <div class="netflix-content">
+                    <div class="netflix-icon">
+                        <svg viewBox="0 0 24 24" fill="#E50914">
+                            <path
+                                d="M5.561 2.344v19.663c0 .54.673.782 1.018.365l4.318-6.075h1.79l4.545 6.096c.35.419 1.026.166 1.026-.387V2.344a.8.8 0 0 0-.8-.8H16.66a.8.8 0 0 0-.8.8v11.854l-3.34-4.823a.801.801 0 0 0-.658-.344h-2.126a.801.801 0 0 0-.66.345L5.736 14.17V2.344a.8.8 0 0 0-.8-.8H4.161a.8.8 0 0 0-.8.8z" />
+                        </svg>
+                    </div>
+                    <div class="netflix-text">
+                        <h3>Gratis Akses Netflix!</h3>
+                        <p>Nikmati streaming tanpa batas dengan paket Premium.</p>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Tab Switch -->
+            <div class="tab-switch">
+                <button class="tab-btn" data-tab="member">Member</button>
+                <button class="tab-btn active" data-tab="voucher">Voucher</button>
+            </div>
+
+            <!-- Login Form -->
+            <div class="form-container">
+                <!-- Member Form (Hidden by default) -->
+                <form id="member-form" class="login-form" style="display: none;" action="$(link-login-only)"
+                    method="post">
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="username" id="username" placeholder="Username atau Email"
+                                autocomplete="off" autocapitalize="off" oninput="this.value = this.value.toLowerCase()"
+                                required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <input type="password" name="password" id="password" placeholder="Kata Sandi" required>
+                            <span class="input-icon" id="toggle-password">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" name="button" value="Login">Masuk</button>
+                </form>
+
+                <!-- Voucher Form (Visible by default) -->
+                <form id="voucher-form" class="login-form" action="$(link-login-only)" method="post">
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <input type="text" name="username" id="voucher-code" placeholder="Masukkan Kode Voucher"
+                                autocomplete="off" autocapitalize="off" oninput="this.value = this.value.toLowerCase()"
+                                required>
+                        </div>
+                    </div>
+                    <input type="hidden" name="password" value="1234">
+                    <button type="submit" class="btn-primary" name="button" value="Login">Gunakan Voucher</button>
+                </form>
+
+                <!-- Divider -->
+                <div class="divider">
+                    <span>Atau</span>
+                </div>
+
+                <!-- QR Login Button -->
+                <button class="btn-secondary" id="qr-login">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg>
+                    Masuk dengan QR
+                </button>
+            </div>
+
+            <!-- Footer Link -->
+            <div class="footer-link">
+                Punya Akun? <a href="#" id="switch-to-member">Masuk sebagai Member</a>
+            </div>
+            <div class="footer-link" style="margin-top: 12px;">
+                <a href="#" id="btn-contact-admin"
+                    style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; color: var(--text-secondary); text-decoration: none; font-size: 13px;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color: #25D366;">
+                        <path
+                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                    </svg>
+                    Butuh Bantuan? Hubungi Admin
+                </a>
+            </div>
+
+            <!-- Global Footer -->
+            <div class="app-footer">
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+    <script src="config.js?v=1004"></script>
+    <script>
+        // Tab Switch
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const memberForm = document.getElementById('member-form');
+        const voucherForm = document.getElementById('voucher-form');
+        const switchToVoucher = document.getElementById('switch-to-voucher');
+        const footerLink = document.querySelector('.footer-link');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                if (btn.dataset.tab === 'member') {
+                    memberForm.style.display = 'block';
+                    voucherForm.style.display = 'none';
+                    footerLink.innerHTML = 'Bukan Member? <a href="#" id="switch-to-voucher">Masuk dengan Voucher</a>';
+                } else {
+                    memberForm.style.display = 'none';
+                    voucherForm.style.display = 'block';
+                    footerLink.innerHTML = 'Punya Akun? <a href="#" id="switch-to-member">Masuk sebagai Member</a>';
+                }
+
+                bindFooterLink();
+            });
+        });
+
+        function bindFooterLink() {
+            const switchLink = document.querySelector('.footer-link a');
+            switchLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetTab = switchLink.id === 'switch-to-voucher' ? 'voucher' : 'member';
+                document.querySelector(`[data-tab="${targetTab}"]`).click();
+            });
+        }
+        bindFooterLink();
+
+        // Password Toggle
+        const togglePassword = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('password');
+
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                // Toggle icon
+                if (type === 'text') {
+                    togglePassword.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                            <line x1="1" y1="1" x2="23" y2="23"/>
+                        </svg>
+                    `;
+                } else {
+                    togglePassword.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    `;
+                }
+            });
+        }
+
+        // Toast Function
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // QR Login
+        document.getElementById('qr-login').addEventListener('click', () => {
+            showToast('Fitur Login QR akan segera hadir!');
+        });
+
+        // Voucher Input Sync (Username = Password)
+        const voucherInput = document.getElementById('voucher-code');
+        const voucherFormPass = document.querySelector('#voucher-form input[name="password"]');
+
+        if (voucherInput && voucherFormPass) {
+            voucherInput.addEventListener('input', function () {
+                voucherFormPass.value = this.value;
+            });
+            // Also sync on submit to be safe
+            document.getElementById('voucher-form').addEventListener('submit', function () {
+                voucherFormPass.value = voucherInput.value;
+            });
+        }
+
+        // Contact Admin Handler
+        const contactBtn = document.getElementById('btn-contact-admin');
+        if (contactBtn) {
+            contactBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Force redirect with fallback (Aggressive)
+                let targetPhone = '6287784477751';
+                if (typeof BUYER_CONFIG !== 'undefined' && BUYER_CONFIG.adminPhone) {
+                    targetPhone = BUYER_CONFIG.adminPhone;
+                }
+                window.open(`https://wa.me/${targetPhone}`, '_blank');
+            });
+        }
+    </script>
+
+    <script>
+        /* Developer: Haris DevLab - Core Protection */
+        (function () {
+            'use strict';
+
+            // --- KONFIGURASI KUNCI RAHASIA (Ganti jika perlu rotasi key tahunan) ---
+            // Default Key: HOTSPOT_PORTAL_SECRET_2025
+            // Default Sig: Signature MD5 dari key valid
+
+            const _0x5a1 = ['\x44\x45\x4d\x4f\x2d\x56\x41\x4c\x49\x44\x2d\x4b\x45\x59', 'warning', 'error', 'success', 'show', 'hidden', 'urgent', 'DEMO MODE', 'DEMO LIMIT: Recovering...', 'DEMO READY'];
+            const _0xSec = '\x48\x4f\x54\x53\x50\x4f\x54\x5f\x50\x4f\x52\x54\x41\x4c\x5f\x53\x45\x43\x52\x45\x54\x5f\x32\x30\x32\x35';
+
+            // Fungsi Hash Sederhana (Untuk validasi lokal ringan)
+            const _0xH = (str) => {
+                let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+                for (let i = 0; i < str.length; i++) {
+                    const ch = str.charCodeAt(i);
+                    h1 = Math.imul(h1 ^ ch, 2654435761);
+                    h2 = Math.imul(h2 ^ ch, 1597334677);
+                }
+                return (4294967296 * (2097151 & (Math.imul(h2 ^ (Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul((Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909)) >>> 13, 3266489909)) >>> 16, 2246822507))) + ((Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909)) >>> 0)).toString(16).padStart(16, '0');
+            };
+            const _0xM = (k, s) => { const i = _0xH(k + s); return _0xH(s + i + k) + i; };
+
+            // Signature Valid dari Server (Simulasi)
+            const _0xSig = ['5a7c3e9f1b4d8a2c9e1f3b5d7a2c4e6f', '1c8e5f3a9b2d4c7e6f8a0b1d3e5c7a9b'];
+
+            // Core Validation Logic
+            function _0xV(_k) {
+                if (!_k) return false;
+                const _tk = _k.trim();
+                if (_tk === _0x5a1[0]) return true; // Demo Key Check
+                if (_0xSig.includes(_0xM(_tk, _0xSec))) return true; // Signature Check
+                if (/^[A-Z0-9@#$%&*\-_+=!?]{28}$/.test(_tk)) return true; // Regex Format Check (Fallback)
+                return false;
+            }
+
+            function _0xI() {
+                try {
+                    // Self-Integrity Check
+                    const _s = _0xV.toString().replace(/\s/g, '');
+                    if (!_s.includes('_0xM') || !_s.includes('_0xSig')) return false;
+                    // Cek ID elemen penting ada atau tidak
+                    // removed specific form check for flexibility
+                    const _r = ['blockScreen'];
+                    for (let _i of _r) if (!document.getElementById(_i)) return false;
+                    return true;
+                } catch (e) { return false; }
+            }
+
+            function disableInspect() {
+                document.addEventListener('contextmenu', (e) => e.preventDefault());
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())) || (e.ctrlKey && e.key.toUpperCase() === 'U')) {
+                        e.preventDefault(); return false;
+                    }
+                });
+            }
+
+            // --- MAIN INIT ---
+            function init() {
+                // 1. Cek Integritas File
+                if (!_0xI()) {
+                    document.getElementById('blockScreen').classList.remove('hidden');
+                    alert('File portal telah dimodifikasi (E01). Gunakan versi asli.');
+                    return;
+                }
+
+                // 2. Ambil Config User
+                const licenseKey = (typeof BUYER_CONFIG !== 'undefined' && BUYER_CONFIG.licenseKey) ? BUYER_CONFIG.licenseKey : '';
+
+                // 3. Validasi Lisensi
+                if (_0xV(licenseKey)) {
+
+                    // Jika Mode DEMO
+                    if (licenseKey === _0x5a1[0]) {
+                        console.log("DEMO MODE ACTIVE");
+                        const demoDisplay = document.getElementById('demoTimerDisplay');
+                        if (demoDisplay) {
+                            demoDisplay.classList.remove('hidden');
+                            demoDisplay.textContent = "VERSI DEMO";
+                        }
+                    }
+
+                    disableInspect();
+
+                    // 60 Seconds Login Button Cooldown (DEMO ONLY)
+                    if (licenseKey === _0x5a1[0]) {
+                        const submitBtns = document.querySelectorAll('.login-form button[type="submit"]');
+                        if (submitBtns.length > 0) {
+                            let cooldown = 60;
+                            submitBtns.forEach(btn => {
+                                btn.disabled = true;
+                                btn.dataset.originalText = btn.textContent;
+                            });
+
+                            const cooldownInterval = setInterval(() => {
+                                submitBtns.forEach(btn => {
+                                    btn.textContent = `Tunggu ${cooldown}d`;
+                                });
+
+                                cooldown--;
+
+                                if (cooldown < 0) {
+                                    clearInterval(cooldownInterval);
+                                    submitBtns.forEach(btn => {
+                                        btn.disabled = false;
+                                        btn.textContent = btn.dataset.originalText;
+                                    });
+                                }
+                            }, 1000);
+                        }
+                    }
+
+                    // 4. Update Nama Bisnis
+                    if (typeof BUYER_CONFIG !== 'undefined' && BUYER_CONFIG.businessName) {
+                        document.title = BUYER_CONFIG.businessName + " - Login";
+                        const businessNameEl = document.getElementById('business-name-display');
+                        if (businessNameEl) businessNameEl.textContent = BUYER_CONFIG.businessName;
+
+                        // Update Footer
+                        document.querySelectorAll('.footer-biz-name').forEach(el => {
+                            el.textContent = BUYER_CONFIG.businessName;
+                        });
+                    }
+
+                    // 4.5 Netflix Feature Check
+                    if (typeof BUYER_CONFIG !== 'undefined' && BUYER_CONFIG.enableNetflix === 1) {
+                        const netflixBanner = document.getElementById('netflix-banner');
+                        if (netflixBanner) netflixBanner.style.display = 'block';
+                    }
+
+                    // 5. Atur Login Mode (1 = Member, 2 = Voucher, 3 = Dual)
+                    const mode = (typeof BUYER_CONFIG !== 'undefined') ? BUYER_CONFIG.loginMode : 3;
+                    const tabSwitch = document.querySelector('.tab-switch');
+                    const memberTab = document.querySelector('[data-tab="member"]');
+                    const voucherTab = document.querySelector('[data-tab="voucher"]');
+
+                    if (mode === 1) {
+                        // Mode 1: Member Only (User & Pass)
+                        if (tabSwitch) tabSwitch.style.display = 'none';
+                        if (memberTab) memberTab.click();
+                    } else if (mode === 2) {
+                        // Mode 2: Voucher Only (User = Pass)
+                        if (tabSwitch) tabSwitch.style.display = 'none';
+                        if (voucherTab) voucherTab.click();
+                    } else {
+                        // Mode 3: Dual Mode (Show Tabs)
+                        if (tabSwitch) tabSwitch.style.display = 'flex';
+                        // HTML defaults to Voucher, so no action needed.
+                    }
+                } else {
+                    // Lisensi Salah
+                    document.getElementById('blockScreen').classList.remove('hidden');
+                }
+            }
+
+            if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
+            else { init(); }
+
+        })();
+    </script>
+</body>
+
+</html>
